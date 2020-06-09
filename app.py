@@ -1,5 +1,6 @@
 class VirtualPet():
-    def __init__(self):
+    def __init__(self, name):
+        self.name = name
         self.hunger = 10
         self.thirst = 10
         self.boredom = 10
@@ -47,12 +48,14 @@ class VirtualPet():
 
 class VirtualPetApp():
     def main():
+        print("""1. Pixel The Cat""")
+        pChoice = raw_input("What pet would you like to choose?")
         pet = VirtualPet()
         while True:
 
             print(" ")
 
-            print("Pixel The Cat")
+            print(str(pet.name))
             print("Hunger: " + str(pet.hunger))
             print("Thirst: " + str(pet.thirst))
             print("boredom: " + str(pet.boredom))
