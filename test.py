@@ -9,14 +9,18 @@ class Player():
         if self.inventory == {}:
             print("\nInventory is empty..")
         else:
-            print("\nCurrent Items:")
+            print("\nWhat item would you like to use? \n \nID | ITEM | AMOUNT")
+            countItems = 0
             for item in self.inventory:
-                print("\n" + str(item) + " : " + str(self.inventory[item]))
+                countItems += 1
+                print(str(countItems) + ". " + str(item) + " : " + str(self.inventory[item]))
+                # print("\n" + str(item) + " : " + str(self.inventory[item]))
 
 class Pet():
     def __init__(self, name):
         self.name = name
         self.level = 1
+        self.xp = 0
         self.maxHP = 2
         self.hp = 2
         self.attack = 1
@@ -26,18 +30,20 @@ class Pet():
 
     def attk(self, enemy):
         hitChance = random.randint(0,10) - enemy.defence
-        if hitChance > 4:
+        if hitChance > 3:
             enemy.hp -= self.attack
-            if enemy.hp <= self.attack:
+            if enemy.hp < self.attack:
                 print("\n" + self.name + " killed the " + enemy.type)
             else:
-                print("\n" + "Hit " + enemy.type + "!")
+                print("\n" + self.name + " hit the " + enemy.type + " for " + str(self.attack) + " damage!")
+                enemy.attk(self)
         else:
             print("\n" + self.name + " missed!")
+            enemy.attk(self)
         # Attempt to attack enemy
         # Uses energy
 
-    def flee(self):
+    def flee(self, enemy):
         # random chance to escape a battle
         if self.energy > 1:
             fleeChance = random.randint(0, 100)
@@ -47,9 +53,9 @@ class Pet():
                 return "Success"
             else:
                 # Enemy Attack
-
                 print("\nYou are unsuccessfull..")
                 self.energy -= 1
+                enemy.attk(self)
         else:
             print("\nEnergy too low to flee!")
 
@@ -58,7 +64,7 @@ class Pet():
             type = random.choice(["Snake","Rat","Badger"])
             enemy = Enemy(type)
             print("\nA wild " + enemy.type + " appeared!")
-            while enemy.hp > 0:
+            while enemy.hp > 0 and self.hp > 0:
                 print("\n" + self.name + "......................" + enemy.type)
                 print("HP: " + str(self.hp) + "/" + str(self.maxHP) + "......................" + "HP: " + str(enemy.hp) + "/" + str(enemy.maxHP))
                 print("Attack: " + str(self.attack) + "......................" + "Attack: " + str(enemy.attack))
@@ -70,19 +76,8 @@ class Pet():
                 if battleChoice == "1":
                     self.attk(enemy)
                 elif battleChoice == "2":
-                    if self.flee() == "Success":
+                    if self.flee(enemy) == "Success":
                         break
-                    # if self.flee() == "Success":
-                    #     print("\nYou successfully flee the battle!!")
-                    #     self.energy -= 1
-                    #     break
-                    # else:
-                    #     self.energy -= 1
-                    #     print("\nYou are unsuccessfull..")
-                    # elif self.flee() == "LowEnergy":
-                    #     print("\nEnergy too low to flee!")
-
-                        
                 else:
                     print("Please choose a number between 1 and 2")
 
@@ -103,31 +98,39 @@ class Pet():
             self.energy -= 1
 
     def rest(self):
+        # Cannot rest if energy is full
         # Increases energy by 1
         if self.energy == self.maxEnergy:
             print("\n" + self.name + " is fully rested!")
         else:
             print("\n" + self.name + " takes a nap and feels refreshed..")
+            healChance = random.randint(0,3)
+            if healChance == 3 and self.hp < self.maxHP:
+                self.hp += 1
             self.energy += 1
-        # Cannot rest if energy is full
 
 
 class Enemy():
     def __init__(self, type):
         self.type = type
         self.maxHP = 2
-        self.hp = 1
+        self.hp = 2
         self.attack = 1
         self.defence = 1
         
-    def attack():
-        pass
+    def attk(self, pet):
+        hitChance = random.randint(0,10) - pet.defence
+        if hitChance > 3:
+            pet.hp -= self.attack
+            print("\nThe " + self.type + " attacked " + pet.name + " for " + str(self.attack) + " damage!")
+        else:
+            print("\nThe " + self.type + " tried to attack " + pet.name + " but missed!")
 
 class Game():
-
     def loop():
         def stats():
             print("\n" + yourPet.name)
+            print("Level: " + yourPet.level)
             print("HP: " + str(yourPet.hp) + "/" + str(yourPet.maxHP))
             print("Energy: " + str(yourPet.energy) + "/" + str(yourPet.maxEnergy))
             print("Attack: " + str(yourPet.attack))
