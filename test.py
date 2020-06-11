@@ -1,3 +1,4 @@
+import math
 import random
 
 class Player():
@@ -27,13 +28,20 @@ class Pet():
         self.defence = 1
         self.maxEnergy = 5
         self.energy = 5
+        self.exponent = 1.5
+        self.baseXP = 1000
+        self.xpIncrease = 1000
+
+    def levelUp(self):
+        return math.floor(self.baseXP * (float(self.level) ** self.exponent))
 
     def attk(self, enemy):
         hitChance = random.randint(0,10) - enemy.defence
         if hitChance > 3:
             enemy.hp -= self.attack
             if enemy.hp < self.attack:
-                print("\n" + self.name + " killed the " + enemy.type)
+                print("\n" + self.name + " killed the " + enemy.type + ". " + self.name + " has gained " + str(self.xpIncrease) + " XP!")
+                self.xp += self.xpIncrease
             else:
                 print("\n" + self.name + " hit the " + enemy.type + " for " + str(self.attack) + " damage!")
                 enemy.attk(self)
@@ -127,6 +135,7 @@ class Enemy():
             print("\nThe " + self.type + " tried to attack " + pet.name + " but missed!")
 
 class Game():
+
     def loop():
         def stats():
             print("\n" + yourPet.name)
@@ -143,6 +152,11 @@ class Game():
         yourPet = Pet(name)
 
         while yourPet.hp > 0:
+
+            if yourPet.xp >= yourPet.levelUp():
+                yourPet.level += 1
+                print("CONGRADULATIONS! " + yourPet.name + " has reached level " + str(yourPet.level) + "!\n")
+
             stats()
 
             choice = raw_input("What would you like to do? \n1. Explore  \n2. Use an item \n3. Rest \n \n")
