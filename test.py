@@ -130,7 +130,7 @@ class Game():
     def loop():
         def stats():
             print("\n" + yourPet.name)
-            print("Level: " + yourPet.level)
+            print("Level: " + str(yourPet.level))
             print("HP: " + str(yourPet.hp) + "/" + str(yourPet.maxHP))
             print("Energy: " + str(yourPet.energy) + "/" + str(yourPet.maxEnergy))
             print("Attack: " + str(yourPet.attack))
