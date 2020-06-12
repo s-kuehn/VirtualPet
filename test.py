@@ -32,8 +32,15 @@ class Pet():
         self.baseXP = 1000
         self.xpIncrease = 1000
 
-    def levelUp(self):
+    def levelUpXP(self):
         return math.floor(self.baseXP * (float(self.level) ** self.exponent))
+
+    def levelUp(self):
+        self.level += 1
+        # add leveling up more stats here
+        self.energy = self.maxEnergy
+        self.hp = self.maxHP
+        print("CONGRADULATIONS! " + self.name + " has reached level " + str(self.level) + "!\n")
 
     def attk(self, enemy):
         hitChance = random.randint(0,10) - enemy.defence
@@ -67,7 +74,7 @@ class Pet():
         else:
             print("\nEnergy too low to flee!")
 
-    def explore(self):
+    def explore(self, playr):
         def battle():
             type = random.choice(["Snake","Rat","Badger"])
             enemy = Enemy(type)
@@ -79,13 +86,15 @@ class Pet():
                 print("Defence: " + str(self.defence) + "......................" + "Defence: " + str(enemy.defence))
                 print("Energy: " + str(self.energy) + "\n")
 
-                battleChoice = raw_input("What would you like to do? \n1. Attack \n2. Flee\n\n")
+                battleChoice = raw_input("What would you like to do? \n1. Attack \n2. Flee \n3. Use Item \n\n")
 
                 if battleChoice == "1":
                     self.attk(enemy)
                 elif battleChoice == "2":
                     if self.flee(enemy) == "Success":
                         break
+                elif battleChoice == "3":
+                    playr.useItem()
                 else:
                     print("Please choose a number between 1 and 2")
 
@@ -153,16 +162,15 @@ class Game():
 
         while yourPet.hp > 0:
 
-            if yourPet.xp >= yourPet.levelUp():
-                yourPet.level += 1
-                print("CONGRADULATIONS! " + yourPet.name + " has reached level " + str(yourPet.level) + "!\n")
+            if yourPet.xp >= yourPet.levelUpXP():
+                yourPet.levelUp()
 
             stats()
 
             choice = raw_input("What would you like to do? \n1. Explore  \n2. Use an item \n3. Rest \n \n")
 
             if choice == "1":
-                if yourPet.explore() == "CANDY":
+                if yourPet.explore(player) == "CANDY":
                     # player.inventory.update({'candy': +1})
                         if "candy" not in player.inventory:
                             player.inventory['candy'] = 1
